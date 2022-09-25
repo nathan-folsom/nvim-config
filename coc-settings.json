@@ -1,0 +1,12 @@
+{
+   "languageserver": {
+       "zls" : {
+           "command": "zls",
+           "filetypes": ["zig"]
+       }
+   },
+   "snippets.ultisnips.enable": false,
+   "tsserver.npm": "/Users/n8folsom/.nvm/versions/node/v14.18.1/bin",
+   "typescript.format.enabled": true,
+   "coc.preferences.formatOnSaveFiletypes": ["typescriptreact", "typescript", "rust"]
+}
