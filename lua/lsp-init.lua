@@ -1,6 +1,28 @@
 -- Autoformat on save
 vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.formatting_sync()]]
 
+-- LSP Keybindings
+local set_lsp_definition = function()
+  vim.api.nvim_buf_set_keymap(0, 'n', '<leader>d', '<cmd>lua vim.lsp.buf.definition()<CR>', { noremap = true })
+end
+
+local function set_lsp_references()
+  vim.api.nvim_buf_set_keymap(0, 'n', '<leader>r', '<cmd>lua vim.lsp.buf.references()<CR>', { noremap = true })
+end
+
+local custom_lsp_attach = function()
+  -- See `:help nvim_buf_set_keymap()` for more information
+  vim.api.nvim_buf_set_keymap(0, 'n', '<leader>s', '<cmd>lua vim.lsp.buf.hover()<CR>', { noremap = true })
+  vim.api.nvim_buf_set_keymap(0, 'n', '<Leader>a', '<cmd>lua vim.lsp.buf.hover_actions()<CR>', { noremap = true })
+  set_lsp_definition()
+  set_lsp_references()
+
+  -- Use LSP as the handler for formatexpr.
+  --    See `:help formatexpr` for more information.
+  vim.api.nvim_buf_set_option(0, 'formatexpr', 'v:lua.vim.lsp.formatexpr()')
+end
+
+
 -- RUST LSP
 local extension_path = vim.env.HOME .. '/.vscode/extensions/vadimcn.vscode-lldb-1.7.4/'
 local codelldb_path = extension_path .. 'adapter/codelldb'
@@ -18,7 +40,9 @@ rt.setup({
       vim.keymap.set("n", "<Leader>s", rt.hover_actions.hover_actions, { buffer = bufnr })
       -- Code action groups
       vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
-      vim.api.nvim_buf_set_keymap(0, 'n', '<leader>d', '<cmd>lua vim.lsp.buf.definition()<CR>', { noremap = true })
+      -- Global lsp apis
+      set_lsp_definition()
+      set_lsp_references()
     end,
   },
 })
@@ -39,19 +63,6 @@ require("dapui").setup()
 --
 
 -- LUA LSP
-local custom_lsp_attach = function()
-  -- See `:help nvim_buf_set_keymap()` for more information
-  vim.api.nvim_buf_set_keymap(0, 'n', '<leader>s', '<cmd>lua vim.lsp.buf.hover()<CR>', { noremap = true })
-  vim.api.nvim_buf_set_keymap(0, 'n', '<leader>d', '<cmd>lua vim.lsp.buf.definition()<CR>', { noremap = true })
-
-  -- Use LSP as the handler for formatexpr.
-  --    See `:help formatexpr` for more information.
-  vim.api.nvim_buf_set_option(0, 'formatexpr', 'v:lua.vim.lsp.formatexpr()')
-
-  -- For plugins with an `on_attach` callback, call them here. For example:
-  -- require('completion').on_attach()
-end
-
 require('lspconfig').sumneko_lua.setup({
   settings = {
     Lua = {
@@ -87,11 +98,7 @@ require('lspconfig').sumneko_lua.setup({
 
 -- TYPESCRIPT LSP
 require("lspconfig").tsserver.setup({
-  on_attach = function()
-    vim.api.nvim_buf_set_keymap(0, 'n', '<Leader>s', '<cmd>lua vim.lsp.buf.hover()<CR>', { noremap = true })
-    vim.api.nvim_buf_set_keymap(0, 'n', '<Leader>d', '<cmd>lua vim.lsp.buf.definition()<CR>', { noremap = true })
-    vim.api.nvim_buf_set_keymap(0, 'n', '<Leader>a', '<cmd>lua vim.lsp.buf.hover_actions()<CR>', { noremap = true })
-  end
+  on_attach = custom_lsp_attach
 })
 --
 
@@ -104,3 +111,6 @@ require 'lspconfig'.html.setup {
   capabilities = capabilities,
   on_attach = custom_lsp_attach
 }
+
+-- ESLint LSP
+require 'lspconfig'.eslint.setup {}
