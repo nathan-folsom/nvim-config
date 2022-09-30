@@ -7,3 +7,4 @@
 5. Install treesitter language servers with `:TSInstall`
 6. Install vscode extracted language servers `npm i -g vscode-langservers-extracted`
 7. Install lua language server `brew install lua-language-server`
+8. Install typescript styled plugin `npm i -g typescript-styled-plugin`
