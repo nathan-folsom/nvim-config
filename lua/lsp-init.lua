@@ -1,5 +1,5 @@
 -- Autoformat on save
-vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.formatting_sync()]]
+-- vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.formatting_sync()]]
 
 -- LSP Keybindings
 local set_lsp_definition = function()
@@ -22,6 +22,10 @@ local custom_lsp_attach = function()
   vim.api.nvim_buf_set_option(0, 'formatexpr', 'v:lua.vim.lsp.formatexpr()')
 end
 
+
+--Enable (broadcasting) snippet capability and completion
+local capabilities = require 'cmp_nvim_lsp'.update_capabilities(vim.lsp.protocol.make_client_capabilities())
+capabilities.textDocument.completion.completionItem.snippetSupport = true
 
 -- RUST LSP
 local extension_path = vim.env.HOME .. '/.vscode/extensions/vadimcn.vscode-lldb-1.7.4/'
@@ -98,19 +102,33 @@ require('lspconfig').sumneko_lua.setup({
 
 -- TYPESCRIPT LSP
 require("lspconfig").tsserver.setup({
-  on_attach = custom_lsp_attach
+  on_attach = custom_lsp_attach,
+  capabilities = capabilities,
+  init_options = {
+    hostInfo = "neovim",
+    plugins = { {
+      name = "typescript-styled-plugin",
+      location = "/Users/nate/usr/node-v14.18.2-darwin-x64/lib/node_modules/typescript-styled-plugin"
+    } }
+  }
 })
 --
 
--- HTML LSP
---Enable (broadcasting) snippet capability for completion
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities.textDocument.completion.completionItem.snippetSupport = true
 
+-- HTML LSP
 require 'lspconfig'.html.setup {
   capabilities = capabilities,
   on_attach = custom_lsp_attach
 }
 
 -- ESLint LSP
-require 'lspconfig'.eslint.setup {}
+require 'lspconfig'.eslint.setup {
+  on_attach = function()
+    vim.api.nvim_buf_set_keymap(0, 'n', '<leader>fr', '<cmd>lua vim.lsp.buf.formatting()<CR>', { noremap = true })
+  end
+}
+
+-- CSS LSP
+require 'lspconfig'.cssls.setup {
+  capabilities = capabilities
+}
