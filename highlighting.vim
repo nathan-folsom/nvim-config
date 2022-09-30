@@ -5,7 +5,7 @@ hi Type ctermfg=15
 hi Todo ctermfg=0
 hi DiffAdd ctermbg=2
 hi DiffChange ctermbg=4 
-hi DiffDelete ctermbg=9
+hi DiffDelete ctermbg=9 ctermfg=NONE
 hi SignColumn ctermbg=NONE
 hi LineNr ctermfg=6 
 hi Pmenu ctermbg=8 ctermfg=15
@@ -18,6 +18,12 @@ hi DiagnosticHint ctermfg=3
 hi MatchParen ctermbg=3
 hi PreProc ctermfg=14
 hi Label ctermfg=9
+hi StatusLine ctermfg=15 ctermbg=8 cterm=bold,underline
+hi StatusLineNC ctermfg=7 ctermbg=8 cterm=underline
+hi VertSplit ctermfg=7 ctermbg=8 cterm=bold
+hi TabLineSel ctermfg=15 ctermbg=8 cterm=bold,underlineline
+hi TabLine ctermfg=7 ctermbg=0 cterm=underlineline
+hi TabLineFill ctermfg=7 ctermbg=0 cterm=underlineline
 
 " Treesitter highlight groups
 hi link TSSymbol Type
